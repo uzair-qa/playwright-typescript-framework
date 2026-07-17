@@ -1,0 +1,41 @@
+{
+  "name": "playwrightwithtypescriptframework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    
+    "test_dev": "cross-env ENV_NAME=dev npx playwright test",
+    "test_demo": "cross-env ENV_NAME=demo npx playwright test --headed",
+
+    "test_demo_cr_hd": "cross-env ENV_NAME=demo npx playwright test --project=chromium --headed",
+    "test_demo_cr_hl": "cross-env ENV_NAME=demo npx playwright test --project=chromium",
+    "test_demo_fr_hd": "cross-env ENV_NAME=demo npx playwright test --project=firefox --headed",
+    
+
+    "test_demo_login_hd": "cross-env ENV_NAME=demo playwright test --project=chromium-login --headed",
+    "test_demo_login_hl": "cross-env ENV_NAME=demo playwright test --project=chromium-login",
+
+    "test_demo_ui": "cross-env ENV_NAME=demo npx playwright test --ui",
+
+    "test_uat_cr_hr": "cross-env ENV_NAME=demo npx playwright test --project=chromium --project=chromium-login --grep=@UAT",
+
+    "test_demo_hd_failed": "cross-env ENV_NAME=demo npx playwright test --headed --last-failed"
+    
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^22.20.1",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "cross-env": "^10.1.0",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^17.4.2"
+  }
+}
