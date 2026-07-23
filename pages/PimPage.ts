@@ -7,6 +7,7 @@ export class PimPage {
     readonly firstNameTextBox: Locator;
     readonly middleNameTextBox: Locator;
     readonly lastNameTextBox: Locator;
+    readonly employeeIdTextBox: Locator;
     readonly saveBtn: Locator;
     readonly newEmployeeNameHeading: Locator;
 
@@ -16,6 +17,7 @@ export class PimPage {
         this.firstNameTextBox = page.getByRole('textbox', { name: 'First Name' });
         this.middleNameTextBox = page.getByRole('textbox', { name: 'Middle Name' });
         this.lastNameTextBox = page.getByRole('textbox', { name: 'Last Name' });
+        this.employeeIdTextBox = page.getByRole('textbox').nth(4);
         this.saveBtn = page.getByRole('button', { name: 'Save' });
         this.newEmployeeNameHeading = page.locator('.orangehrm-edit-employee-name h6');
     }
@@ -31,6 +33,12 @@ export class PimPage {
         await this.firstNameTextBox.fill(firstname);
         await this.middleNameTextBox.fill(middlename);
         await this.lastNameTextBox.fill(lastname);
+
+        // Overwrite OrangeHRM's auto-suggested Employee Id with a guaranteed-unique value,
+        // since parallel browser runs can otherwise collide on the same auto-generated id
+        const uniqueEmployeeId = Date.now().toString().slice(-6);
+        await this.employeeIdTextBox.fill(uniqueEmployeeId);
+
         await this.saveBtn.click();
 
         /**

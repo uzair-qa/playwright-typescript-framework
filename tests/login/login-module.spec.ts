@@ -54,18 +54,18 @@ test.describe("Negative Tests for Login Functionality", {
         await expect(loginPage.userNameInput).toBeVisible();
     })
 
-    test('[Login] Verify that a user can not login with an invalid username and password[Failing intentionally]', {
-        tag: ['@UI', '@UAT', '@DEV'],
-        annotation: {
-            type: 'Test Case Link',
-            description: 'Link of test case[tbd]'
-        },
-    }, async ({ gotoUrl, loginPage, commonUtils }) => {
-        await loginPage.loginOrangeHrm(loginModuleData.wrong_username, loginModuleData.wrong_password);
-        //await expect(loginPage.invalidCredentialsErrorPopup).toHaveText(loginModuleData.invalid_credentials_text);
-        await expect(loginPage.invalidCredentialsErrorPopup).toHaveText("false");
-        await expect(loginPage.userNameInput).toBeVisible();
-    })
+    // test('[Login] Verify that a user can not login with an invalid username and password[Failing intentionally]', {
+    //     tag: ['@UI', '@UAT', '@DEV'],
+    //     annotation: {
+    //         type: 'Test Case Link',
+    //         description: 'Link of test case[tbd]'
+    //     },
+    // }, async ({ gotoUrl, loginPage, commonUtils }) => {
+    //     await loginPage.loginOrangeHrm(loginModuleData.wrong_username, loginModuleData.wrong_password);
+    //     //await expect(loginPage.invalidCredentialsErrorPopup).toHaveText(loginModuleData.invalid_credentials_text);
+    //     await expect(loginPage.invalidCredentialsErrorPopup).toHaveText("false");
+    //     await expect(loginPage.userNameInput).toBeVisible();
+    // })
 
     // test('[Login] Verify User can login with both an Invalid username and password', {
     //     tag: ['@VISUAL', '@UAT'],
