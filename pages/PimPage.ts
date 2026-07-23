@@ -1,4 +1,5 @@
-import { Locator, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
+import { RandomUtils } from "../utils/RandomUtils";
 
 export class PimPage {
 
@@ -22,24 +23,46 @@ export class PimPage {
         this.newEmployeeNameHeading = page.locator('.orangehrm-edit-employee-name h6');
     }
 
+    async clickAdd() {
+        await this.addBtn.click();
+    }
+
+    async enterFirstName(firstName: string) {
+        await this.firstNameTextBox.fill(firstName);
+    }
+
+    async enterMiddleName(middleName: string) {
+        await this.middleNameTextBox.fill(middleName);
+    }
+
+    async enterLastName(lastName: string) {
+        await this.lastNameTextBox.fill(lastName);
+    }
+
+    async enterEmployeeId(employeeId: string) {
+        await this.employeeIdTextBox.fill(employeeId);
+    }
+
+    async clickSave() {
+        await this.saveBtn.click();
+    }
+
     /**
      * To add a new employee in PIM module
      * @param firstname 
      * @param middlename 
      * @param lastname 
      */
-    async addEmployee(firstname: string, middlename: string, lastname: string) {
-        await this.addBtn.click();
-        await this.firstNameTextBox.fill(firstname);
-        await this.middleNameTextBox.fill(middlename);
-        await this.lastNameTextBox.fill(lastname);
+    async addEmployee(firstname: string, middlename: string, lastname: string): Promise<string> {
 
-        // Overwrite OrangeHRM's auto-suggested Employee Id with a guaranteed-unique value,
-        // since parallel browser runs can otherwise collide on the same auto-generated id
-        const uniqueEmployeeId = Date.now().toString().slice(-6);
-        await this.employeeIdTextBox.fill(uniqueEmployeeId);
+        const employeeId = RandomUtils.employeeId();
 
-        await this.saveBtn.click();
+        await this.clickAdd();
+        await this.enterFirstName(firstname);
+        await this.enterMiddleName(middlename);
+        await this.enterLastName(lastname);
+        await this.enterEmployeeId(employeeId);
+        await this.clickSave();
 
         /**
          * Although playwright already uses auto waits, but here for: page transition, AJAX request, or new UI to render, use waitFor()
@@ -47,5 +70,13 @@ export class PimPage {
         await this.newEmployeeNameHeading.waitFor({
             state: "visible"
         });
+
+        return employeeId;
+    }
+
+    /*-------------------------------------------------------*/
+
+    async verifyEmployeeCreated(employeeName: string) {
+        await expect(this.newEmployeeNameHeading).toHaveText(employeeName);
     }
 }

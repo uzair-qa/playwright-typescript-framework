@@ -4,7 +4,7 @@ export class LeftNavigation {
 
     readonly page: Page;
     readonly pimLink: Locator;
-    readonly orangeHrmLogo : Locator;
+    readonly orangeHrmLogo: Locator;
     readonly leftNavigationPanel: Locator;
 
     constructor(page: Page) {

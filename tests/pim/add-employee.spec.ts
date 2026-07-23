@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures/hooks-fixtures';
-import pimData from '../../data/pim-module-data.json';
+import pimData from '../../data/employee-data.json';
 
 test('[PIM] Verify that a new employee is successfully created under the PIM Module', {
     tag: ['@UI', '@UAT'],
@@ -13,7 +13,14 @@ test('[PIM] Verify that a new employee is successfully created under the PIM Mod
     })
 
     await test.step("Add Employee in PI Module", async () => {
-        await pimPage.addEmployee(pimData.first_name, pimData.middle_name, pimData.last_name);
-        await expect(pimPage.newEmployeeNameHeading).toHaveText(`${pimData.first_name} ${pimData.last_name}`);
+        const employeeId = await pimPage.addEmployee(
+            pimData.first_name,
+            pimData.middle_name,
+            pimData.last_name
+        );
+        await pimPage.verifyEmployeeCreated(
+            `${pimData.first_name} ${pimData.last_name}`
+        );
+        console.log(`Employee ID: $ {employeeId}`);
     })
 })
