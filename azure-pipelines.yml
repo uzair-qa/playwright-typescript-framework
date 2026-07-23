@@ -23,3 +23,17 @@ steps:
   
   - script: SECRET_KEY=$(SECRET_KEY_VAL) npm run $(SCRIPTS_KEY_VAL)
     displayName: 'Run Tests'
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: 'playwright-report'
+      artifact: 'playwright-report'
+      publishLocation: 'pipeline'
+    condition: always()
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**test-results/junit-report.xml'
+      testRunTitle: 'Playwright Junit Report'
+    condition: always()
