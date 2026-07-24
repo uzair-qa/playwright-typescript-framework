@@ -12,7 +12,7 @@ test('[PIM] Verify that a new employee is successfully created under the PIM Mod
         await leftNavigationPage.openPimModule();
     })
 
-    await test.step("Add Employee in PI Module", async () => {
+    await test.step("Create a new Employee", async () => {
         const employeeId = await pimPage.addEmployee(
             pimData.first_name,
             pimData.middle_name,
@@ -21,6 +21,6 @@ test('[PIM] Verify that a new employee is successfully created under the PIM Mod
         await pimPage.verifyEmployeeCreated(
             `${pimData.first_name} ${pimData.last_name}`
         );
-        console.log(`Employee ID: $ {employeeId}`);
+        console.log(`Employee ID: ${employeeId}`);
     })
 })

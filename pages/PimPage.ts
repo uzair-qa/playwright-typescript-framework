@@ -12,6 +12,12 @@ export class PimPage {
     readonly saveBtn: Locator;
     readonly newEmployeeNameHeading: Locator;
 
+    readonly employeeIdSearchBox: Locator;
+    readonly searchBtn: Locator;
+    readonly employeeListTab: Locator;
+
+
+
     constructor(page: Page) {
         this.page = page;
         this.addBtn = page.getByRole('button', { name: ' Add' });
@@ -21,7 +27,18 @@ export class PimPage {
         this.employeeIdTextBox = page.getByRole('textbox').nth(4);
         this.saveBtn = page.getByRole('button', { name: 'Save' });
         this.newEmployeeNameHeading = page.locator('.orangehrm-edit-employee-name h6');
+
+        this.employeeIdSearchBox = page.locator('.oxd-input-group:has-text("Employee Id") input');
+        this.searchBtn = page.getByRole('button', { name: 'Search' });
+
+        this.employeeListTab = page.getByRole('listitem').filter({ hasText: 'Employee List' });
     }
+
+
+    //============================
+    // Add Employee
+    //============================
+
 
     async clickAdd() {
         await this.addBtn.click();
@@ -46,6 +63,8 @@ export class PimPage {
     async clickSave() {
         await this.saveBtn.click();
     }
+
+
 
     /**
      * To add a new employee in PIM module
@@ -74,7 +93,45 @@ export class PimPage {
         return employeeId;
     }
 
-    /*-------------------------------------------------------*/
+    //============================
+    // Employee Search
+    //============================
+
+    async enterEmployeeIdForSearch(employeeId: string) {
+        await this.employeeIdSearchBox.fill(employeeId);
+    }
+
+    async clickSearch() {
+        await this.searchBtn.click();
+    }
+
+    async openEmployeeList() {
+        await this.employeeListTab.click();
+    }
+
+
+    async searchEmployeeById(employeeId: string) {
+        await this.enterEmployeeIdForSearch(employeeId);
+        await this.clickSearch();
+    }
+
+    employeeRow(employeeId: string): Locator {
+        return this.page.getByRole("row").filter({
+            has: this.page.getByRole("cell", {
+                name: employeeId,
+                exact: true
+            })
+        });
+    }
+
+    async verifyEmployeeExists(employeeId: string){
+        await expect(this.employeeRow(employeeId)).toBeVisible();
+    }
+
+    //============================
+    // Assertions
+    //============================
+
 
     async verifyEmployeeCreated(employeeName: string) {
         await expect(this.newEmployeeNameHeading).toHaveText(employeeName);
