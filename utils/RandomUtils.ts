@@ -1,6 +1,10 @@
-export class RandomUtils{
+export class RandomUtils {
 
-    static employeeId(){
-        return Date.now().toString().slice(-6);
+    static employeeId(): string {
+        return `${Date.now()}${Math.floor(Math.random() * 1000)}`.slice(-8);
+    }
+
+    static randomString(prefix = ""): string {
+        return `${prefix}${Date.now()}`;
     }
 }

@@ -32,6 +32,7 @@ export class PimPage {
         this.searchBtn = page.getByRole('button', { name: 'Search' });
 
         this.employeeListTab = page.getByRole('listitem').filter({ hasText: 'Employee List' });
+
     }
 
 
@@ -93,6 +94,7 @@ export class PimPage {
         return employeeId;
     }
 
+
     //============================
     // Employee Search
     //============================
@@ -101,21 +103,38 @@ export class PimPage {
         await this.employeeIdSearchBox.fill(employeeId);
     }
 
-    async clickSearch() {
-        await this.searchBtn.click();
+    async clickSearch(employeeId: string) {
+        await Promise.all([
+            this.page.waitForResponse(response =>
+                response.request().method() === "GET" &&
+                response.ok() &&
+                response.url().includes("/api/v2/pim/employees") &&
+                response.url().includes(`employeeId=${employeeId}`)
+            ),
+            this.searchBtn.click()
+        ]);
     }
 
     async openEmployeeList() {
         await this.employeeListTab.click();
+
+        await expect(this.employeeIdSearchBox).toBeVisible();
+        await expect(this.searchBtn).toBeEnabled();
     }
 
 
     async searchEmployeeById(employeeId: string) {
         await this.enterEmployeeIdForSearch(employeeId);
-        await this.clickSearch();
+        await expect(this.employeeIdSearchBox).toHaveValue(employeeId);
+        await this.clickSearch(employeeId);
     }
 
-    employeeRow(employeeId: string): Locator {
+
+    //============================
+    // Dynamic Locators
+    //============================
+
+    private employeeRow(employeeId: string): Locator {
         return this.page.getByRole("row").filter({
             has: this.page.getByRole("cell", {
                 name: employeeId,
@@ -124,9 +143,22 @@ export class PimPage {
         });
     }
 
-    async verifyEmployeeExists(employeeId: string){
-        await expect(this.employeeRow(employeeId)).toBeVisible();
+    private editEmployeeButton(employeeId: string): Locator {
+        return this.employeeRow(employeeId)
+            .locator(".oxd-table-cell-actions")
+            .locator("button")
+            .first();       //Employee Row → Actions Container → Button → First
     }
+
+
+    //============================
+    // Edit Employee
+    //============================
+
+    async openEmployeeDetails(employeeId: string) {
+        await this.editEmployeeButton(employeeId).click();
+    }
+
 
     //============================
     // Assertions
@@ -135,5 +167,10 @@ export class PimPage {
 
     async verifyEmployeeCreated(employeeName: string) {
         await expect(this.newEmployeeNameHeading).toHaveText(employeeName);
+    }
+
+    async verifyEmployeeExists(employeeId: string) {
+
+        await expect(this.employeeRow(employeeId)).toBeVisible();
     }
 }
