@@ -28,7 +28,7 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 3 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['html', { open: 'always' }], ['junit', { outputFile: 'test-results/junit-report.xml'}]],
+  reporter: [['html', { open: 'always' }], ['junit', { outputFile: 'test-results/junit-report.xml' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   timeout: 90000,
   expect: {
@@ -40,6 +40,7 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     headless: true,
+
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     trace: 'retain-on-failure',
@@ -49,6 +50,10 @@ export default defineConfig({
   projects: [
     {
       name: 'Setup',
+      use: {
+        ...devices['Desktop Chrome'],
+        locale: 'en-US',
+      },
       testMatch: 'tests/setup/global.setup.ts'
     },
     // Login Tests
@@ -56,6 +61,7 @@ export default defineConfig({
       name: "chromium-login",
       use: {
         ...devices["Desktop Chrome"],
+        locale: 'en-US',  // Force locale to English
         storageState: undefined
       },
       testMatch: [
@@ -67,6 +73,7 @@ export default defineConfig({
       dependencies: ['Setup'],
       use: {
         ...devices['Desktop Chrome'],
+        locale: 'en-US',  // Force locale to English
         storageState: './playwright/.auth/auth.json'
       },
       testIgnore: ['tests/login/**/*.spec.ts']
@@ -77,6 +84,7 @@ export default defineConfig({
       dependencies: ['Setup'],
       use: {
         ...devices['Desktop Firefox'],
+        locale: 'en-US',  // Force locale to English
         storageState: './playwright/.auth/auth.json'
       },
       testIgnore: ['tests/login/**/*.spec.ts']
@@ -87,6 +95,7 @@ export default defineConfig({
       dependencies: ['Setup'],
       use: {
         ...devices['Desktop Safari'],
+        locale: 'en-US',  // Force locale to English
         storageState: './playwright/.auth/auth.json'
       },
       testIgnore: ['tests/login/**/*.spec.ts']
