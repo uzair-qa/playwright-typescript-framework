@@ -16,6 +16,9 @@ export class PimPage {
     readonly searchBtn: Locator;
     readonly employeeListTab: Locator;
 
+    readonly confirmDeleteBtn: Locator;
+    readonly successToast: Locator;
+    //readonly noRecordsFoundLabel: Locator;
 
 
     constructor(page: Page) {
@@ -32,6 +35,13 @@ export class PimPage {
         this.searchBtn = page.getByRole('button', { name: 'Search' });
 
         this.employeeListTab = page.getByRole('listitem').filter({ hasText: 'Employee List' });
+
+        this.confirmDeleteBtn = page.getByRole("button", { name: /Yes,\s*Delete/ });
+
+        this.successToast = page.locator(".oxd-toast").getByText("Successfully Deleted");
+
+        //this.noRecordsFoundLabel = page.getByText("No Records Found");
+
 
     }
 
@@ -150,6 +160,13 @@ export class PimPage {
             .first();       //Employee Row → Actions Container → Button → First
     }
 
+    private deleteEmployeeButton(employeeId: string): Locator {
+        return this.employeeRow(employeeId)
+            .locator(".oxd-table-cell-actions")
+            .locator("button")
+            .nth(1);
+    }
+
 
     //============================
     // Edit Employee
@@ -159,6 +176,25 @@ export class PimPage {
         await this.editEmployeeButton(employeeId).click();
     }
 
+
+    //============================
+    // Delete Employee
+    //============================
+
+    async clickDeleteEmployee(employeeId: string) {
+        await this.deleteEmployeeButton(employeeId).click();
+    }
+
+    async confirmDelete() {
+        await this.confirmDeleteBtn.click();
+    }
+
+    async deleteEmployee(employeeId: string) {
+        await this.clickDeleteEmployee(employeeId);
+        await this.confirmDelete();
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).not.toBeVisible();
+    }
 
     //============================
     // Assertions
@@ -172,5 +208,9 @@ export class PimPage {
     async verifyEmployeeExists(employeeId: string) {
 
         await expect(this.employeeRow(employeeId)).toBeVisible();
+    }
+
+    async verifyEmployeeDeleted(employeeId: string) {
+        await expect(this.employeeRow(employeeId)).toHaveCount(0);
     }
 }
